@@ -9,8 +9,8 @@ import scala.sys.SystemProperties
 
 class SmokeTest extends FunSuite {
   val client = new ClientHttpHandler(5000)
-  val host = new SystemProperties()("test_host")
-  assert(host != null, "Require the machine and port for the smoke test to be specified: -Dtest_host=xyz:80")
+  val host = new SystemProperties().get("test_host").getOrElse("")
+  assert(!host.isEmpty, "Require the machine and port for the smoke test to be specified: -Dtest_host=xyz:80")
 
   test(s"landing page greets the caller (host=$host)") {
 
