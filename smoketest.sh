@@ -1,5 +1,11 @@
 #! /usr/bin/env sh
 
-set -x
+#set -x
 
-sbt -Dtest_host=${test_host} "playground-calc-smoketest/test"
+if [ $# -ne 1 ]
+then
+    echo "Usage: smoketest.sh deploy_machine:port"
+    exit 1
+fi
+
+sbt -Dtest_host=$1 "playground-calc-smoketest/test"
