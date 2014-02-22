@@ -1,5 +1,6 @@
 import sbt._
 import sbt.Keys._
+import com.github.retronym.SbtOneJar._
 
 object CalcBuild extends Build {
 
@@ -30,7 +31,11 @@ object CalcBuild extends Build {
     "playground-calc",
     file("calc"),
     settings =
-      Project.defaultSettings ++ Seq(
+      Project.defaultSettings ++
+      com.github.retronym.SbtOneJar.oneJarSettings ++
+      Seq(
+        // default classifier for one-jar is 'one-jar' - I don't like that
+        artifact in oneJar <<= moduleName(Artifact(_, "complete")),
         libraryDependencies ++= Seq(
           scalaTest,
           utterlyIdle

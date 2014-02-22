@@ -7,4 +7,4 @@ echo $version_string | tee build-number.sbt
 
 sbt clean test package package
 
-echo "##teamcity[publishArtifacts 'calc/target/scala-2.10/*.jar']"
+echo "##teamcity[publishArtifacts 'calc/target/scala-2.10/playground-calc-*-complete.jar']"
