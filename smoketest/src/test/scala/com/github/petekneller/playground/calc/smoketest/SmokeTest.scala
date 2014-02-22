@@ -12,7 +12,7 @@ class SmokeTest extends FunSuite {
   val host = new SystemProperties()("test_host")
   assert(host != null, "Require the machine and port for the smoke test to be specified: -Dtest_host=xyz:80")
 
-  test("landing page greets the caller") {
+  test(s"landing page greets the caller (host=$host)") {
 
     val response = client.handle(get(s"http://$host/hello?name=world").build())
     assert(response.status() === Status.OK)
@@ -20,7 +20,7 @@ class SmokeTest extends FunSuite {
 
   }
 
-  test("status page returns 200 OK") {
+  test(s"status page returns 200 OK (host=$host)") {
     val response = client.handle(get(s"http://$host/status").build())
     assert(response.status() === Status.OK)
   }
