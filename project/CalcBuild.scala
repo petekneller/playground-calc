@@ -1,6 +1,5 @@
 import sbt._
 import sbt.Keys._
-import com.github.retronym.SbtOneJar._
 
 object CalcBuild extends Build {
 
@@ -9,6 +8,23 @@ object CalcBuild extends Build {
     val scalaTest = "org.scalatest" %% "scalatest" % "1.9.2" % "test"
     val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
 
+  }
+
+  object OneZip {
+    val key = TaskKey[File]("one-zip")
+    lazy val task = key := zipper((dependencyClasspath in Compile).value.map(_.data), (Keys.`package` in Compile).value, streams.value)
+    val zipper = (deps: Seq[File], jarFile: File, stream: TaskStreams) => {
+
+      val sources = (jarFile -> jarFile.getName) :: deps.zip(deps.map("lib/" + _.getName)).toList
+      stream.log.debug("Zipping these artifacts:")
+      sources.foreach{ case (f1, f2) => stream.log.debug(s"$f1 => $f2")}
+
+      val zipArchive = file(jarFile.getAbsolutePath().replaceAll("jar$", "zip"))
+      stream.log.info(s"Creating artifacts archive: ${zipArchive.getAbsolutePath}")
+
+      IO.zip(sources, zipArchive)
+      zipArchive
+    }
   }
 
   // common across all modules
@@ -32,10 +48,8 @@ object CalcBuild extends Build {
     file("calc"),
     settings =
       Project.defaultSettings ++
-      com.github.retronym.SbtOneJar.oneJarSettings ++
       Seq(
-        // default classifier for one-jar is 'one-jar' - I don't like that
-        artifact in oneJar <<= moduleName(Artifact(_, "complete")),
+        OneZip.task,
         libraryDependencies ++= Seq(
           scalaTest,
           utterlyIdle
@@ -47,8 +61,10 @@ object CalcBuild extends Build {
     "playground-calc-smoketest",
     file("smoketest"),
     settings =
-      Project.defaultSettings ++ Seq(
-        libraryDependencies ++= Seq(
+      Project.defaultSettings ++
+      Seq(
+        libraryDependencies ++=
+        Seq(
           scalaTest,
           utterlyIdle
         )
