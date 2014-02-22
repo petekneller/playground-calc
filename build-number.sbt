@@ -1,2 +1,2 @@
-version := "dev"
+version in ThisBuild := "dev"
 
