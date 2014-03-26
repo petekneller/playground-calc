@@ -3,7 +3,7 @@
 case $1 in
 start)
   date >> logs/out
-  java -cp lib/*:playground-calc_2.10-19.jar com.github.petekneller.playground.calc.Calc >> logs/out 2>&1  &
+  java -cp lib/* com.github.petekneller.playground.calc.Calc >> logs/out 2>&1  &
   echo $! > logs/PID
 ;;
 

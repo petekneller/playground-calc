@@ -12,17 +12,20 @@ object CalcBuild extends Build {
 
   object OneZip {
     val key = TaskKey[File]("one-zip")
-    lazy val task = key := zipper((dependencyClasspath in Compile).value.map(_.data), (Keys.`package` in Compile).value, streams.value)
-    val zipper = (deps: Seq[File], jarFile: File, stream: TaskStreams) => {
+    lazy val task = key := zipper((dependencyClasspath in Compile).value.map(_.data), (Keys.`package` in Compile).value, (baseDirectory in ThisBuild).value, streams.value)
+    val zipper = (deps: Seq[File], jarFile: File, baseDir: File, stream: TaskStreams) => {
 
-      val sources = (jarFile -> jarFile.getName) :: deps.zip(deps.map("lib/" + _.getName)).toList
-      stream.log.debug("Zipping these artifacts:")
-      sources.foreach{ case (f1, f2) => stream.log.debug(s"$f1 => $f2")}
+      val jars = (jarFile -> ("lib/" + jarFile.getName)) :: deps.zip(deps.map("lib/" + _.getName)).toList
+      val otherDistributionStuff = IO.listFiles(baseDir / "distribution").map(f => f -> f.name)
+      val inputs = jars ++ otherDistributionStuff
+
+      stream.log.debug("Zipping these dependencies:")
+      inputs.foreach{ case (from, to) => stream.log.debug(s"$from => $to")}
 
       val zipArchive = file(jarFile.getAbsolutePath().replaceAll("jar$", "zip"))
       stream.log.info(s"Creating artifacts archive: ${zipArchive.getAbsolutePath}")
 
-      IO.zip(sources, zipArchive)
+      IO.zip(inputs, zipArchive)
       zipArchive
     }
   }
@@ -39,7 +42,8 @@ object CalcBuild extends Build {
   lazy val buildRoot = Project(
     "build-root",
     file("."),
-    aggregate = Seq(calc))
+    aggregate = Seq(calc)
+  )
 
   import Dependencies._
 
@@ -50,7 +54,8 @@ object CalcBuild extends Build {
       Project.defaultSettings ++
       Seq(
         OneZip.task,
-        libraryDependencies ++= Seq(
+        libraryDependencies ++=
+        Seq(
           scalaTest,
           utterlyIdle
         )
