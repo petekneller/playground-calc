@@ -16,7 +16,7 @@ object CalcBuild extends Build {
     val zipper = (deps: Seq[File], jarFile: File, baseDir: File, stream: TaskStreams) => {
 
       val jars = (jarFile -> ("lib/" + jarFile.getName)) :: deps.zip(deps.map("lib/" + _.getName)).toList
-      val otherDistributionStuff = IO.listFiles(baseDir / "distribution").map(f => f -> f.name)
+      val otherDistributionStuff = IO.listFiles(baseDir / "package").map(f => f -> f.name)
       val inputs = jars ++ otherDistributionStuff
 
       stream.log.debug("Zipping these dependencies:")

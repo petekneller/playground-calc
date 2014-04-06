@@ -7,4 +7,6 @@ echo $version_string | tee build-number.sbt
 
 sbt clean test oneZip
 
-echo "##teamcity[publishArtifacts 'calc/target/scala-2.10/playground-calc*.zip']"
+if [ ! -d target ]; then mkdir target; fi
+mv calc/target/scala-2.10/playground-calc*.zip target
+echo "##teamcity[publishArtifacts 'target/playground-calc*.zip']"
