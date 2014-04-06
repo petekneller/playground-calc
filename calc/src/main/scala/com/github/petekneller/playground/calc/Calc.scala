@@ -1,6 +1,7 @@
 package com.github.petekneller.playground.calc
 
 import com.googlecode.utterlyidle._
+import ApplicationBuilder.application
 import BasePath.basePath
 import com.googlecode.utterlyidle.modules.ResourcesModule
 import com.googlecode.utterlyidle.dsl.BindingBuilder._
@@ -9,11 +10,13 @@ import com.googlecode.totallylazy.proxy.Call._
 
 object Calc extends App {
 
-  ApplicationBuilder.application(new RestApplication(
+  lazy val utterlyIdleApp = new RestApplication(
     basePath("/"),
     new HelloModule,
     new StatusModule
-  )).start(9000)
+  )
+
+  application(utterlyIdleApp).start(9000)
 
 }
 

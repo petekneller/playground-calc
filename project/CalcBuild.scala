@@ -76,4 +76,9 @@ object CalcBuild extends Build {
       )
   )
 
+  lazy val deploy = Project(
+    "deploy",
+    file("deploy")
+  )
+
 }
