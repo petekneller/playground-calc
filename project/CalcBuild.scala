@@ -14,7 +14,6 @@ object CalcBuild extends Build {
     object Test {
       val scalaTest = Dependencies.scalaTest % "test"
     }
-
   }
 
   // common across all modules
