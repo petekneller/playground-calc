@@ -15,11 +15,16 @@ class AcceptanceTest extends FlatSpec with ShouldMatchers {
     calculator("23") should equal (\/-(23))
   }
 
-  it should "respond with a useful error message when an argument is not a floating-point number" in {
+  it should "respond with a useful error message when a literal argument is not a floating point number" in {
 
     val result = calculator("fooey!")
     result.isLeft should be (true)
     result.swap.toOption.get should startWith ("Invalid literal: 'fooey!' is not a floating point number")
+  }
+
+  it should "evaluate operations in a prefix, parenthesis-delimited fashion" in {
+
+    calculator("(+ 1 2)") should equal (\/-(3))
   }
 
 }
