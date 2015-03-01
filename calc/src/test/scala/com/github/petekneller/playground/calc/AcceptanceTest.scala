@@ -27,4 +27,15 @@ class AcceptanceTest extends FlatSpec with ShouldMatchers {
     calculator("(+ 1 2)") should equal (\/-(3))
   }
 
+  it should "support the basic arithmetic operations" in {
+
+    calculator("(+ 1 2)") should equal (\/-(3))
+    calculator("(- 1 2)") should equal (\/-(-1))
+    calculator("(- 1 2 2)") should equal (\/-(-3))
+    calculator("(* 1 2)") should equal (\/-(2))
+    calculator("(* 1 2 2)") should equal (\/-(4))
+    calculator("(/ 1 2)") should equal (\/-(0.5))
+    calculator("(/ 1 2 2)") should equal (\/-(0.25))
+  }
+
 }
