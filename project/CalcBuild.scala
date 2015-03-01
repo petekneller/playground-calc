@@ -35,6 +35,19 @@ object CalcBuild extends Build {
 
   import Dependencies._
 
+  lazy val calc = Project(
+    "playground-calc",
+    file("calc"),
+    settings =
+      Project.defaultSettings ++
+      buildSettings ++
+      Seq(
+        libraryDependencies ++= Seq(
+          Test.scalaTest
+        )
+      )
+  )
+
   lazy val calcHttp = Project(
     "playground-calc-http",
     file("calc-http"),
@@ -43,10 +56,9 @@ object CalcBuild extends Build {
       buildSettings ++
       Seq(
         OneZip.task,
-        libraryDependencies ++=
-        Seq(
-          Test.scalaTest,
-          Compile.utterlyIdle
+        libraryDependencies ++= Seq(
+            Compile.utterlyIdle,
+            Test.scalaTest
         )
       )
   )
@@ -58,10 +70,9 @@ object CalcBuild extends Build {
       Project.defaultSettings ++
       buildSettings ++
       Seq(
-        libraryDependencies ++=
-        Seq(
-          Test.scalaTest,
-          Compile.utterlyIdle
+        libraryDependencies ++= Seq(
+          Compile.utterlyIdle,
+          Test.scalaTest
         )
       )
   )
