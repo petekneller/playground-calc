@@ -4,9 +4,16 @@ import sbt.Keys._
 object CalcBuild extends Build {
 
   object Dependencies {
+    private val scalaTest = "org.scalatest" %% "scalatest" % "1.9.2"
+    private val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
 
-    val scalaTest = "org.scalatest" %% "scalatest" % "1.9.2" % "test"
-    val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
+    object Compile  {
+      val utterlyIdle = Dependencies.utterlyIdle
+    }
+
+    object Test {
+      val scalaTest = Dependencies.scalaTest % "test"
+    }
 
   }
 
@@ -40,8 +47,8 @@ object CalcBuild extends Build {
         OneZip.task,
         libraryDependencies ++=
         Seq(
-          scalaTest,
-          utterlyIdle
+          Test.scalaTest,
+          Compile.utterlyIdle
         )
       )
   )
@@ -55,8 +62,8 @@ object CalcBuild extends Build {
       Seq(
         libraryDependencies ++=
         Seq(
-          scalaTest,
-          utterlyIdle
+          Test.scalaTest,
+          Compile.utterlyIdle
         )
       )
   )
