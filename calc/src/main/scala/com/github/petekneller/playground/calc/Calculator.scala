@@ -14,15 +14,15 @@ object Calculator {
 
     sealed trait AST
     case class Lit(literal: String) extends AST
-    case class Op(operation: String, operands: List[AST]) extends AST
+    case class Expr(operation: String, operands: List[AST]) extends AST
 
     object parsers extends RegexParsers {
       def literal: Parser[AST] = """([^\s()]+)""".r ^^ { l => Lit(l) }
       def operator: Parser[String] = """([\w+]+)""".r
       def operand: Parser[AST] = literal
-      def operation: Parser[AST] = "(" ~> operator ~ (operand *) <~ ")" ^^ { case operator ~ operands => Op(operator, operands) }
+      def expression: Parser[AST] = "(" ~> operator ~ (operand *) <~ ")" ^^ { case operator ~ operands => Expr(operator, operands) }
 
-      def validInput: Parser[AST] = literal | operation
+      def validInput: Parser[AST] = literal | expression
     }
 
     def parseLiteral(input: String): String \/ Double = \/.fromTryCatchNonFatal(input.toDouble).leftMap(t => s"Invalid literal: '$input' is not a floating point number; full error follows: \n ${t.toString}")
@@ -33,7 +33,7 @@ object Calculator {
         -\/(msg)
       case Success(Lit(literal), _) =>
         parseLiteral(literal)
-      case Success(Op(operator, operands), _) =>
+      case Success(Expr(operator, operands), _) =>
         operator match {
           case "+" =>
             operands.
