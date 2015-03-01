@@ -1,7 +1,8 @@
 package com.github.petekneller.playground.calc
 
 
-
+// All of the below was in aid of getting this running in TC/AWS. I'll come back to it
+// once/if I get back to those goals
 
 //object Calc extends App {
 //

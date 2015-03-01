@@ -12,17 +12,23 @@ class AcceptanceTests extends FlatSpec with Matchers {
   "A calculator served over http" should "respond to GET requests by evaluating the given expression" in {
     withCalcHttp {
 
-      val resp = Http.http(GET(s"http://localhost:8001/calc/result/${URLEncoder.encode("(* (+ 3 4 3) (/ 4 2))", "utf-8")}"))
+      val aSimpleExpression = Http.http(GET(s"http://localhost:8001/calc/result/${URLEncoder.encode("(+ 1 2)", "utf-8")}"))
+      aSimpleExpression.status should be (OK)
+      aSimpleExpression.entityAsString should be("3.0")
 
-      resp.status should be (OK)
-      resp.entityAsString should be("20")
+      val aBigExpression = Http.http(GET(s"http://localhost:8001/calc/result/${URLEncoder.encode("(* (+ 3 4 3) (/ 4 2))", "utf-8")}"))
+      aBigExpression.status should be (OK)
+      aBigExpression.entityAsString should be("20.0")
     }
   }
 
   def withCalcHttp(block: => Unit): Unit = {
-    Calc.start()
-    block
-    Calc.stop()
+    try {
+      Calc.start()
+      block
+    } finally {
+      Calc.stop()
+    }
   }
 
 }

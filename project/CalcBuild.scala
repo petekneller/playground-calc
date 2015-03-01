@@ -66,7 +66,8 @@ object CalcBuild extends Build {
             Compile.naiveHttp,
             Test.scalaTest
         )
-      )
+      ),
+    dependencies = Seq(calc)
   )
 
   lazy val smoketest = Project(
