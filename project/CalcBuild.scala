@@ -6,9 +6,11 @@ object CalcBuild extends Build {
   object Dependencies {
     private val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
     private val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
+    private val scalaZ = "org.scalaz" %% "scalaz-core" % "7.1.1"
 
     object Compile  {
       val utterlyIdle = Dependencies.utterlyIdle
+      val scalaZ = Dependencies.scalaZ
     }
 
     object Test {
@@ -43,6 +45,7 @@ object CalcBuild extends Build {
       buildSettings ++
       Seq(
         libraryDependencies ++= Seq(
+          Compile.scalaZ,
           Test.scalaTest
         )
       )
