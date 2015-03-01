@@ -38,7 +38,6 @@ object CalcBuild extends Build {
     resolvers in ThisBuild += "Bodar repo" at "http://repo.bodar.com/"
   )
 
-
   lazy val buildRoot = Project(
     "build-root",
     file("."),
@@ -51,12 +50,13 @@ object CalcBuild extends Build {
   import Dependencies._
 
   lazy val calc = Project(
-    "playground-calc",
+    "calc",
     file("calc"),
     settings =
       Project.defaultSettings ++
       buildSettings ++
       Seq(
+        name := "playground-calc", // determines binary name
         OneZip.task,
         libraryDependencies ++=
         Seq(
@@ -67,7 +67,7 @@ object CalcBuild extends Build {
   )
 
   lazy val smoketest = Project(
-    "playground-calc-smoketest",
+    "smoketest",
     file("smoketest"),
     settings =
       Project.defaultSettings ++
