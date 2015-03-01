@@ -7,10 +7,12 @@ object CalcBuild extends Build {
     private val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
     private val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
     private val scalaZ = "org.scalaz" %% "scalaz-core" % "7.1.1"
+    private val naiveHttp = "io.shaka" %% "naive-http-server" % "37"
 
     object Compile  {
       val utterlyIdle = Dependencies.utterlyIdle
       val scalaZ = Dependencies.scalaZ
+      val naiveHttp = Dependencies.naiveHttp
     }
 
     object Test {
@@ -23,7 +25,8 @@ object CalcBuild extends Build {
     // version is specified in /build-number.sbt
     organization in ThisBuild := "com.github.petekneller",
     scalaVersion in ThisBuild := "2.11.4",
-    resolvers in ThisBuild += "Bodar repo" at "http://repo.bodar.com/"
+    resolvers in ThisBuild += "Bodar repo" at "http://repo.bodar.com/",
+    resolvers in ThisBuild += "Tim Tennant's repo" at "http://dl.bintray.com/timt/repo/"
   )
 
   lazy val buildRoot = Project(
@@ -32,7 +35,7 @@ object CalcBuild extends Build {
     settings =
       Project.defaultSettings ++
       buildSettings,
-    aggregate = Seq(calcHttp)
+    aggregate = Seq(calc, calcHttp)
   )
 
   import Dependencies._
@@ -60,7 +63,7 @@ object CalcBuild extends Build {
       Seq(
         OneZip.task,
         libraryDependencies ++= Seq(
-            Compile.utterlyIdle,
+            Compile.naiveHttp,
             Test.scalaTest
         )
       )
