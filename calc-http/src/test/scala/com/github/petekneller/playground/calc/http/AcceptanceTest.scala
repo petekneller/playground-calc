@@ -1,8 +1,7 @@
-package com.github.petekneller.playground.calc
+package com.github.petekneller.playground.calc.http
 
 import java.net.URLEncoder
 
-import com.github.petekneller.playground.calc.http.Calc
 import io.shaka.http.Http
 import io.shaka.http.Request._
 import io.shaka.http.Status._
