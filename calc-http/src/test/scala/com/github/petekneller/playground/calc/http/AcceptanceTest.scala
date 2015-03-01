@@ -9,6 +9,8 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class AcceptanceTests extends FlatSpec with Matchers {
 
+  //TODO Reuse the acceptance tests from the -calc package here
+
   "A calculator served over http" should "respond to GET requests by evaluating the given expression" in {
     withCalcHttp {
 
