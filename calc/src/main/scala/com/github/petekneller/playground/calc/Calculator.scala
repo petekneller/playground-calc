@@ -1,7 +1,7 @@
 package com.github.petekneller.playground.calc
 
 import scala.util.parsing.combinator.RegexParsers
-import scalaz.{-\/, Applicative, \/}
+import scalaz.{\/-, -\/, Applicative, \/}
 import scalaz.std.list._
 import scalaz.std.option.optionSyntax._
 import scalaz.syntax.traverse._
@@ -30,31 +30,15 @@ object Calculator {
 
     def parseLiteral(input: String): CalcResult = \/.fromTryCatchNonFatal(input.toDouble).leftMap(t => s"Invalid literal: '$input' is not a floating point number; full error follows: \n ${t.toString}")
 
-    val operations = Map[String, List[AST] => CalcResult](
-      "+" -> { operands =>
-        operands.
-          map{ case Lit(lit) => parseLiteral(lit) }.
-          sequence[EitherAppl, Double].
-          map(_.fold(0: Double){ case (acc, m) => acc + m })
-      },
-      "-" -> { operands =>
-        operands.
-          map{ case Lit(lit) => parseLiteral(lit) }.
-          sequence[EitherAppl, Double].
-          map(_.reduceLeft[Double]{ case (acc, m) => acc - m })
-      },
-      "*" -> { operands =>
-        operands.
-          map{ case Lit(lit) => parseLiteral(lit) }.
-          sequence[EitherAppl, Double].
-          map(_.reduceLeft[Double]{ case (acc, m) => acc * m })
-      },
-      "/" -> { operands =>
-        operands.
-          map{ case Lit(lit) => parseLiteral(lit) }.
-          sequence[EitherAppl, Double].
-          map(_.reduceLeft[Double]{ case (acc, m) => acc / m })
-      }
+    def foldingOperator(reducingFn: (Double, Double) => Double): List[Double] => CalcResult = { operands =>
+      \/-(operands.reduceLeft[Double]{ case (acc, m) => reducingFn(acc, m) })
+    }
+
+    val operations = Map[String, List[Double] => CalcResult](
+      "+" -> foldingOperator(_ + _),
+      "-" -> foldingOperator(_ - _),
+      "*" -> foldingOperator(_ * _),
+      "/" -> foldingOperator(_ / _)
     )
 
     import parsers._
@@ -64,7 +48,13 @@ object Calculator {
       case Success(Lit(literal), _) =>
         parseLiteral(literal)
       case Success(Expr(operator, operands), _) =>
-        operations.get(operator).toRightDisjunction(s"Invalid operation: '$operator' not recognised").flatMap(op => op(operands))
+        for {
+          parsedOperands <- operands.
+            map{ case Lit(lit) => parseLiteral(lit) }.
+            sequence[EitherAppl, Double]
+          operatorFn <- operations.get(operator).toRightDisjunction(s"Invalid operation: '$operator' not recognised")
+          result <- operatorFn(parsedOperands)
+        } yield result
     }
   }
 }
