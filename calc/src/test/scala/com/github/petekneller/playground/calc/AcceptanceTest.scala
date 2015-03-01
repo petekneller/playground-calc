@@ -38,4 +38,10 @@ class AcceptanceTest extends FlatSpec with ShouldMatchers {
     calculator("(/ 1 2 2)") should equal (\/-(0.25))
   }
 
+  it should "support nested expressions" in {
+
+    calculator("(+ 1 (* 2 3))") should equal (\/-(7))
+    calculator("(* (+ 3 4 3) (/ 4 2))") should equal (\/-(20))
+  }
+
 }
