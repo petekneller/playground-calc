@@ -31,7 +31,7 @@ object CalcBuild extends Build {
   }
 
   // common across all modules
-  override lazy val settings = super.settings ++ Seq(
+  val buildSettings = Seq(
     // version is specified in /build-number.sbt
     organization in ThisBuild := "com.github.petekneller",
     scalaVersion in ThisBuild := "2.10.3",
@@ -42,6 +42,9 @@ object CalcBuild extends Build {
   lazy val buildRoot = Project(
     "build-root",
     file("."),
+    settings =
+      Project.defaultSettings ++
+      buildSettings,
     aggregate = Seq(calc)
   )
 
@@ -52,6 +55,7 @@ object CalcBuild extends Build {
     file("calc"),
     settings =
       Project.defaultSettings ++
+      buildSettings ++
       Seq(
         OneZip.task,
         libraryDependencies ++=
@@ -67,6 +71,7 @@ object CalcBuild extends Build {
     file("smoketest"),
     settings =
       Project.defaultSettings ++
+      buildSettings ++
       Seq(
         libraryDependencies ++=
         Seq(
@@ -78,7 +83,8 @@ object CalcBuild extends Build {
 
   lazy val deploy = Project(
     "deploy",
-    file("deploy")
+    file("deploy"),
+    settings = buildSettings
   )
 
 }
