@@ -1,4 +1,13 @@
+# SBT
 target/
+
+# Intellij
 .idea/
 .idea_modules/
+
+# emacs
+.ensime
+.ensime_cache
+
+# vim
 *~
