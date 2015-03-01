@@ -30,19 +30,18 @@ object CalcBuild extends Build {
     settings =
       Project.defaultSettings ++
       buildSettings,
-    aggregate = Seq(calc)
+    aggregate = Seq(calcHttp)
   )
 
   import Dependencies._
 
-  lazy val calc = Project(
-    "calc",
-    file("calc"),
+  lazy val calcHttp = Project(
+    "playground-calc-http",
+    file("calc-http"),
     settings =
       Project.defaultSettings ++
       buildSettings ++
       Seq(
-        name := "playground-calc", // determines binary name
         OneZip.task,
         libraryDependencies ++=
         Seq(
