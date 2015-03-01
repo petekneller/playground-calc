@@ -4,7 +4,7 @@ import sbt.Keys._
 object CalcBuild extends Build {
 
   object Dependencies {
-    private val scalaTest = "org.scalatest" %% "scalatest" % "1.9.2"
+    private val scalaTest = "org.scalatest" %% "scalatest" % "2.2.4"
     private val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
 
     object Compile  {
@@ -20,7 +20,7 @@ object CalcBuild extends Build {
   val buildSettings = Seq(
     // version is specified in /build-number.sbt
     organization in ThisBuild := "com.github.petekneller",
-    scalaVersion in ThisBuild := "2.10.3",
+    scalaVersion in ThisBuild := "2.11.4",
     resolvers in ThisBuild += "Bodar repo" at "http://repo.bodar.com/"
   )
 
