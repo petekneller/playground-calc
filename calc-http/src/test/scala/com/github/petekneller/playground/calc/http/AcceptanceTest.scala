@@ -7,7 +7,7 @@ import io.shaka.http.Request._
 import io.shaka.http.Status._
 import org.scalatest.{FlatSpec, Matchers}
 
-class AcceptanceTests extends FlatSpec with Matchers {
+class AcceptanceTest extends FlatSpec with Matchers {
 
   //TODO Reuse the acceptance tests from the -calc package here
 

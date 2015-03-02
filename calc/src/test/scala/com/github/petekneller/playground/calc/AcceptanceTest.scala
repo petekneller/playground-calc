@@ -1,47 +1,29 @@
 package com.github.petekneller.playground.calc
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.matchers.{MatchResult, Matcher}
 
-import scalaz.\/-
+import scalaz.{-\/, \/-}
 
-class AcceptanceTest extends FlatSpec with ShouldMatchers {
+class AcceptanceTest extends AcceptanceTestFixture {
 
-  val calculator = Calculator.run _
-
-  "A Polish notation calculator" should "evaluate literal numerals" in {
-
-    calculator("1") should equal (\/-(1))
-    calculator("23") should equal (\/-(23))
+  def success(answerMatcher: Matcher[Double]): Matcher[CalcResult] = new Matcher[CalcResult] {
+    override def apply(result: CalcResult): MatchResult = {
+      result match {
+        case -\/(msg) => MatchResult(false, "Result was not right", s"Result was $result")
+        case \/-(answer) => answerMatcher(answer)
+      }
+    }
   }
 
-  it should "respond with a useful error message when a literal argument is not a floating point number" in {
-
-    val result = calculator("fooey!")
-    result.isLeft should be (true)
-    result.swap.toOption.get should startWith ("Invalid literal: 'fooey!' is not a floating point number")
+  def failure(failureMessageMatcher: Matcher[String]): Matcher[CalcResult] = new Matcher[CalcResult] {
+    override def apply(result: CalcResult): MatchResult = {
+      result match {
+        case -\/(msg) => failureMessageMatcher(msg)
+        case \/-(answer) => MatchResult(false, "Result was not left", s"Result was $result")
+      }
+    }
   }
 
-  it should "evaluate operations in a prefix, parenthesis-delimited fashion" in {
-
-    calculator("(+ 1 2)") should equal (\/-(3))
-  }
-
-  it should "support the basic arithmetic operations" in {
-
-    calculator("(+ 1 2)") should equal (\/-(3))
-    calculator("(- 1 2)") should equal (\/-(-1))
-    calculator("(- 1 2 2)") should equal (\/-(-3))
-    calculator("(* 1 2)") should equal (\/-(2))
-    calculator("(* 1 2 2)") should equal (\/-(4))
-    calculator("(/ 1 2)") should equal (\/-(0.5))
-    calculator("(/ 1 2 2)") should equal (\/-(0.25))
-  }
-
-  it should "support nested expressions" in {
-
-    calculator("(+ 1 (* 2 3))") should equal (\/-(7))
-    calculator("(* (+ 3 4 3) (/ 4 2))") should equal (\/-(20))
-  }
+  acceptanceTests(Calculator.run _, success, failure)
 
 }

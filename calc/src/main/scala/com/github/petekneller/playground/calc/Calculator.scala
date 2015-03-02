@@ -6,11 +6,12 @@ import scalaz.std.list._
 import scalaz.std.option.optionSyntax._
 import scalaz.syntax.traverse._
 import scalaz.{-\/, \/, \/-}
+import com.github.petekneller.playground.calc._
 
 object Calculator {
 
+
   type EitherApplicative[x] = String \/ x
-  type CalcResult = String \/ Double
 
   def run(input: String): CalcResult = {
 
