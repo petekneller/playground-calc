@@ -10,10 +10,16 @@ import com.github.petekneller.playground.calc._
 
 object Calculator {
 
-
   type EitherApplicative[x] = String \/ x
 
-  def run(input: String): CalcResult = {
+  val defaultOperations = List[(String, List[Double] => CalcResult)](
+    "+" -> foldingOperator(_ + _),
+    "-" -> foldingOperator(_ - _),
+    "*" -> foldingOperator(_ * _),
+    "/" -> foldingOperator(_ / _)
+  )
+
+  def run(input: String, operations: List[(String, List[Double] => CalcResult)] = defaultOperations): CalcResult = {
 
     sealed trait AST
     case class Lit(literal: String) extends AST
@@ -30,17 +36,6 @@ object Calculator {
 
     def parseLiteral(input: String): CalcResult = \/.fromTryCatchNonFatal(input.toDouble).leftMap(t => s"Invalid literal: '$input' is not a floating point number; full error follows: \n ${t.toString}")
 
-    def foldingOperator(f: (Double, Double) => Double): List[Double] => CalcResult = { operands =>
-      \/-(operands.reduceLeft[Double]{ case (acc, m) => f(acc, m) })
-    }
-
-    val operations = Map[String, List[Double] => CalcResult](
-      "+" -> foldingOperator(_ + _),
-      "-" -> foldingOperator(_ - _),
-      "*" -> foldingOperator(_ * _),
-      "/" -> foldingOperator(_ / _)
-    )
-
     def processExpression(expr: AST): CalcResult = {
       expr match {
         case Lit(literal) =>
@@ -50,7 +45,7 @@ object Calculator {
             parsedOperands <- operands.
               map(processExpression).
               sequence[EitherApplicative, Double]
-            operatorFn <- operations.get(operator).toRightDisjunction(s"Invalid operation: '$operator' not recognised")
+            operatorFn <- operations.toMap.get(operator).toRightDisjunction(s"Invalid operation: '$operator' not recognised")
             result <- operatorFn(parsedOperands)
           } yield result
       }
@@ -61,5 +56,9 @@ object Calculator {
       case Failure(msg, _) => -\/(msg)
       case Success(expr, _) => processExpression(expr)
     }
+  }
+
+  private def foldingOperator(f: (Double, Double) => Double): List[Double] => CalcResult = { operands =>
+    \/-(operands.reduceLeft[Double]{ case (acc, m) => f(acc, m) })
   }
 }
