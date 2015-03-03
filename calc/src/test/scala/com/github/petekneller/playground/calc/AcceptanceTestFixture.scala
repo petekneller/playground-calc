@@ -1,11 +1,13 @@
 package com.github.petekneller.playground.calc
 
 import org.scalatest.FlatSpec
-import org.scalatest.matchers.{ShouldMatchers, Matcher}
+import org.scalatest.matchers.{MatchResult, ShouldMatchers, Matcher}
+
+import scalaz.{\/-, -\/}
 
 trait AcceptanceTestFixture extends FlatSpec with ShouldMatchers {
 
-  def acceptanceTests(calculator: Calculator, succeedWith: Matcher[Double] => Matcher[CalcResult], failWith: Matcher[String] => Matcher[CalcResult]): Unit = {
+  def acceptanceTests(calculator: Calculator): Unit = {
 
     "A Polish notation calculator" should "evaluate literal numerals" in {
 
@@ -39,7 +41,24 @@ trait AcceptanceTestFixture extends FlatSpec with ShouldMatchers {
       calculator("(+ 1 (* 2 3))") should succeedWith(equal(7))
       calculator("(* (+ 3 4 3) (/ 4 2))") should succeedWith(equal(20))
     }
+  }
 
+  def succeedWith(answerMatcher: Matcher[Double]): Matcher[CalcResult] = new Matcher[CalcResult] {
+    override def apply(result: CalcResult): MatchResult = {
+      result match {
+        case -\/(msg) => MatchResult(false, "Result was not right", s"Result was $result")
+        case \/-(answer) => answerMatcher(answer)
+      }
+    }
+  }
+
+  def failWith(failureMessageMatcher: Matcher[String]): Matcher[CalcResult] = new Matcher[CalcResult] {
+    override def apply(result: CalcResult): MatchResult = {
+      result match {
+        case -\/(msg) => failureMessageMatcher(msg)
+        case \/-(answer) => MatchResult(false, "Result was not left", s"Result was $result")
+      }
+    }
   }
 
 }
