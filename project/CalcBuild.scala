@@ -67,7 +67,7 @@ object CalcBuild extends Build {
             Test.scalaTest
         )
       ),
-    dependencies = Seq(calc)
+    dependencies = Seq(calc % "compile;test->test")
   )
 
   lazy val smoketest = Project(
