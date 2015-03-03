@@ -7,9 +7,9 @@ import scalaz.{\/-, -\/}
 
 trait AcceptanceTestFixture extends FlatSpec with ShouldMatchers {
 
-  def acceptanceTests(calculator: Calculator): Unit = {
+  def acceptanceTests(suiteName: String, calculator: Calculator): Unit = {
 
-    "A Polish notation calculator" should "evaluate literal numerals" in {
+    suiteName should "evaluate literal numerals" in {
 
       calculator("1") should succeedWith(equal(1))
       calculator("23") should succeedWith(equal(23))

@@ -6,6 +6,6 @@ import scalaz.{-\/, \/-}
 
 class AcceptanceTest extends AcceptanceTestFixture {
 
-  acceptanceTests(Calculator.run _)
+  acceptanceTests("A Polish notation calculator", Calculator.run _)
 
 }
