@@ -2,14 +2,15 @@ package com.github.petekneller.playground.calc.http
 
 import java.net.URLEncoder
 
-import io.shaka.http.Http
+import com.github.petekneller.playground.calc.AcceptanceTestFixture
 import io.shaka.http.Request._
 import io.shaka.http.Status._
-import org.scalatest.{FlatSpec, Matchers}
+import io.shaka.http.{Http, Status}
+import org.scalatest.matchers.ShouldMatchers
 
-class AcceptanceTest extends FlatSpec with Matchers {
+import scalaz.{-\/, \/}
 
-  //TODO Reuse the acceptance tests from the -calc package here
+class AcceptanceTest extends AcceptanceTestFixture with ShouldMatchers {
 
   "A calculator served over http" should "respond to GET requests by evaluating the given expression" in {
     withCalcHttp {
@@ -24,12 +25,23 @@ class AcceptanceTest extends FlatSpec with Matchers {
     }
   }
 
-  def withCalcHttp(block: => Unit): Unit = {
+  acceptanceTests({ (input: String) =>
+    withCalcHttp {
+      val res = Http.http(GET(s"http://localhost:8001/calc/result/${URLEncoder.encode(input, "utf-8")}"))
+      res.status match {
+        case Status.OK => \/.fromTryCatchNonFatal(res.entityAsString.toDouble).leftMap(_.toString)
+        case _ => -\/(res.entityAsString)
+      }
+    }
+  })
+
+  def withCalcHttp[A](block: => A): A = {
+    val server = new Calc
     try {
-      Calc.start()
+      server.start()
       block
     } finally {
-      Calc.stop()
+      server.stop()
     }
   }
 
