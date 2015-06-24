@@ -1,11 +1,11 @@
 package com.github.petekneller.playground.calc
 
-import org.scalatest.FunSuite
+import org.scalatest.{Matchers, FunSuite}
 import org.scalatest.matchers.ShouldMatchers
 
 import scalaz.{\/-, -\/}
 
-class ConfigurationTest extends FunSuite with ShouldMatchers with CalculatorMatchers {
+class ConfigurationTest extends FunSuite with Matchers with CalculatorMatchers {
 
   test("default operators can be overridden with adhoc operators") {
 
