@@ -8,7 +8,7 @@ import io.shaka.http.RequestMatching._
 import io.shaka.http.Response._
 import io.shaka.http.{HttpServer, Status}
 
-class Calc(operators: List[(String, List[Double] => CalcResult)] = Calculator.defaultOperations) {
+class OnlineCalculator(operators: List[(String, List[Double] => CalcResult)] = Calculator.defaultOperations) {
 
   val calculator: Calculator = Calculator.run(_, operators)
 

@@ -11,7 +11,7 @@ import scalaz.{-\/, \/}
 class AcceptanceTest extends AcceptanceTestFixture with ShouldMatchers with HttpFixtures {
 
   "A calculator served over http" should "respond to GET requests by evaluating the given expression" in {
-    withCalcHttp(new Calc) {
+    withCalcHttp(new OnlineCalculator) {
 
       val aSimpleExpression = Http.http(GET(s"http://localhost:8001/calc/result/${encoded("(+ 1 2)")}"))
       aSimpleExpression.status should be (OK)
@@ -24,7 +24,7 @@ class AcceptanceTest extends AcceptanceTestFixture with ShouldMatchers with Http
   }
 
   acceptanceTests("A calculator served over http", { (input: String) =>
-    withCalcHttp(new Calc) {
+    withCalcHttp(new OnlineCalculator) {
       val res = Http.http(GET(s"http://localhost:8001/calc/result/${encoded(input)}"))
       res.status match {
         case Status.OK => \/.fromTryCatchNonFatal(res.entityAsString.toDouble).leftMap(_.toString)
