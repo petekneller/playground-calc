@@ -12,14 +12,14 @@ object Calculator {
 
   type EitherApplicative[x] = String \/ x
 
-  val defaultOperations = List[(String, List[Double] => Result)](
+  val defaultOperations = List[OperatorBinding](
     "+" -> foldingOperator(_ + _),
     "-" -> foldingOperator(_ - _),
     "*" -> foldingOperator(_ * _),
     "/" -> foldingOperator(_ / _)
   )
 
-  def run(input: String, operations: List[(String, List[Double] => Result)] = defaultOperations): Result = {
+  def run(input: String, operations: List[OperatorBinding] = defaultOperations): Result = {
 
     sealed trait AST
     case class Lit(literal: String) extends AST

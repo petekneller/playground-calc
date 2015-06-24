@@ -7,27 +7,22 @@ import io.shaka.http.Status.OK
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
-import scalaz.{-\/, \/-}
+import scalaz.syntax.BindOps
+import scalaz.{\/, -\/, \/-}
 
-class ConfigurationTest extends FunSuite with ShouldMatchers with CalculatorMatchers with HttpFixtures {
+class ConfigurationTest extends ConfigurationTestFixture with HttpFixtures {
 
-  test("default operators can be overridden with adhoc operators") {
+  configurationTests("A calculator served over http", {
+    (operators: List[OperatorBinding]) =>
+      (input: String) =>
+        withCalcHttp(new OnlineCalculator(operators = operators)) { port =>
 
-    val negation: (String, List[Double] => Result) = ("¬", {
-      case arg :: Nil => \/-(-1 * arg)
-      case _ => -\/("Invalid arguments: negation takes only one argument")
-    })
-
-    withCalcHttp(new OnlineCalculator(operators = negation :: Nil)) { port =>
-
-      val res1 = Http.http(GET(s"http://localhost:$port/calc/result/${encoded("(+ 1 2)")}"))
-      res1.status should be (Status.INTERNAL_SERVER_ERROR)
-      res1.entityAsString should include("'+' not recognised")
-
-      val res2 = Http.http(GET(s"http://localhost:$port/calc/result/${encoded("(¬ 2)")}"))
-      res2.status should be (OK)
-      res2.entityAsString should be("-2.0")
-    }
-  }
+          val res = Http.http(GET(s"http://localhost:$port/calc/result/${encoded(input)}"))
+          res.status match {
+            case Status.OK => \/.fromTryCatchNonFatal(res.entityAsString.toDouble).leftMap(_.toString)
+            case _ => -\/(res.entityAsString)
+          }
+        }
+  })
 
 }

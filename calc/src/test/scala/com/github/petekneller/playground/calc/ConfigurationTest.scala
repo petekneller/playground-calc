@@ -1,22 +1,7 @@
 package com.github.petekneller.playground.calc
 
-import org.scalatest.{Matchers, FunSuite}
-import org.scalatest.matchers.ShouldMatchers
+class ConfigurationTest extends ConfigurationTestFixture {
 
-import scalaz.{\/-, -\/}
-
-class ConfigurationTest extends FunSuite with Matchers with CalculatorMatchers {
-
-  test("default operators can be overridden with adhoc operators") {
-
-    val negation: (String, List[Double] => Result) = ("¬", {
-      case arg :: Nil => \/-(-1 * arg)
-      case _ => -\/("Invalid arguments: negation takes only one argument")
-    })
-    val calculator: Calculator = Calculator.run(_, negation :: Nil)
-
-    calculator("(+ 1 2)") should failWith(include("'+' not recognised"))
-    calculator("(¬ 2)") should succeedWith(equal(-2))
-  }
+  configurationTests("A Polish notation calculator", (ops: List[OperatorBinding]) => Calculator.run(_, ops))
 
 }
