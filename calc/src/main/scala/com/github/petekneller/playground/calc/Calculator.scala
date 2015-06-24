@@ -5,18 +5,18 @@ import scalaz.\/._
 import scalaz.std.list._
 import scalaz.std.option.optionSyntax._
 import scalaz.syntax.traverse._
-import scalaz.{-\/, \/, \/-}
-import com.github.petekneller.playground.calc._
+import scalaz.{-\/, \/}
 
 object Calculator {
 
   type EitherApplicative[x] = String \/ x
 
-  val defaultOperations = List[OperatorBinding](
-    "+" -> foldingOperator(_ + _),
-    "-" -> foldingOperator(_ - _),
-    "*" -> foldingOperator(_ * _),
-    "/" -> foldingOperator(_ / _)
+  import Operations._
+  val defaultOperations = List(
+    addition,
+    subtraction,
+    multiplication,
+    division
   )
 
   def run(input: String, operations: List[OperatorBinding] = defaultOperations): Result = {
@@ -56,9 +56,5 @@ object Calculator {
       case Failure(msg, _) => -\/(msg)
       case Success(expr, _) => processExpression(expr)
     }
-  }
-
-  private def foldingOperator(f: (Double, Double) => Double): List[Double] => Result = { operands =>
-    \/-(operands.reduceLeft[Double]{ case (acc, m) => f(acc, m) })
   }
 }
