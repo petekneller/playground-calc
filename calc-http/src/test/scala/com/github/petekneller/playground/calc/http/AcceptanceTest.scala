@@ -4,11 +4,11 @@ import com.github.petekneller.playground.calc.AcceptanceTestFixture
 import io.shaka.http.Request._
 import io.shaka.http.Status._
 import io.shaka.http.{Http, Status}
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 
 import scalaz.{-\/, \/}
 
-class AcceptanceTest extends AcceptanceTestFixture with ShouldMatchers with HttpFixtures {
+class AcceptanceTest extends AcceptanceTestFixture with Matchers with HttpFixtures {
 
   "A calculator served over http" should "respond to GET requests by evaluating the given expression" in {
     withCalcHttp(new OnlineCalculator) { port =>
