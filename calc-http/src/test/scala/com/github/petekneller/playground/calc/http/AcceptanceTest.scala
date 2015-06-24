@@ -1,12 +1,10 @@
 package com.github.petekneller.playground.calc.http
 
 import com.github.petekneller.playground.calc.AcceptanceTestFixture
+import io.shaka.http.Http
 import io.shaka.http.Request._
 import io.shaka.http.Status._
-import io.shaka.http.{Http, Status}
 import org.scalatest.Matchers
-
-import scalaz.{-\/, \/}
 
 class AcceptanceTest extends AcceptanceTestFixture with Matchers with HttpFixtures {
 
@@ -25,12 +23,7 @@ class AcceptanceTest extends AcceptanceTestFixture with Matchers with HttpFixtur
 
   acceptanceTests("A calculator served over http", { (input: String) =>
     withCalcHttp(new OnlineCalculator) { port =>
-      val res = Http.http(GET(s"http://localhost:$port/calc/result/${encoded(input)}"))
-      res.status match {
-        case Status.OK => \/.fromTryCatchNonFatal(res.entityAsString.toDouble).leftMap(_.toString)
-        case _ => -\/(res.entityAsString)
-      }
+      testClient(port)(input)
     }
   })
-
 }
