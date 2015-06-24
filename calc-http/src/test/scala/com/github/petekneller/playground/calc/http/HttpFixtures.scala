@@ -6,10 +6,10 @@ trait HttpFixtures {
 
   val encoded: String => String = URLEncoder.encode(_, "utf-8")
 
-  def withCalcHttp[A](server: OnlineCalculator)(block: => A): A = {
+  def withCalcHttp[A](server: OnlineCalculator)(block: Int => A): A = {
     try {
-      server.start()
-      block
+      val port = server.start()
+      block(port)
     } finally {
       server.stop()
     }

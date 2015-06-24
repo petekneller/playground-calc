@@ -18,13 +18,13 @@ class ConfigurationTest extends FunSuite with ShouldMatchers with CalculatorMatc
       case _ => -\/("Invalid arguments: negation takes only one argument")
     })
 
-    withCalcHttp(new OnlineCalculator(negation :: Nil)) {
+    withCalcHttp(new OnlineCalculator(operators = negation :: Nil)) { port =>
 
-      val res1 = Http.http(GET(s"http://localhost:8001/calc/result/${encoded("(+ 1 2)")}"))
+      val res1 = Http.http(GET(s"http://localhost:$port/calc/result/${encoded("(+ 1 2)")}"))
       res1.status should be (Status.INTERNAL_SERVER_ERROR)
       res1.entityAsString should include("'+' not recognised")
 
-      val res2 = Http.http(GET(s"http://localhost:8001/calc/result/${encoded("(¬ 2)")}"))
+      val res2 = Http.http(GET(s"http://localhost:$port/calc/result/${encoded("(¬ 2)")}"))
       res2.status should be (OK)
       res2.entityAsString should be("-2.0")
     }

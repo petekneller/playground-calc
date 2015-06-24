@@ -8,11 +8,11 @@ import io.shaka.http.RequestMatching._
 import io.shaka.http.Response._
 import io.shaka.http.{HttpServer, Status}
 
-class OnlineCalculator(operators: List[(String, List[Double] => CalcResult)] = Calculator.defaultOperations) {
+class OnlineCalculator(port: Int = 0, operators: List[(String, List[Double] => CalcResult)] = Calculator.defaultOperations) {
 
   val calculator: Calculator = Calculator.run(_, operators)
 
-  val server = HttpServer(8001).handler{
+  val server = HttpServer(port).handler{
     case GET(url"/calc/result/$expression") => {
       val result = calculator(URLDecoder.decode(expression, "utf-8"))
       result.fold(
@@ -22,7 +22,7 @@ class OnlineCalculator(operators: List[(String, List[Double] => CalcResult)] = C
     }
   }
 
-  def start(): Unit = server.start()
+  def start(): Int = server.start().port()
 
   def stop(): Unit = server.stop()
 
