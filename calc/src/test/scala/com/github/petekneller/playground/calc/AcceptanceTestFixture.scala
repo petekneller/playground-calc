@@ -1,11 +1,8 @@
 package com.github.petekneller.playground.calc
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.{MatchResult, ShouldMatchers, Matcher}
+import org.scalatest.{FlatSpec, Matchers}
 
-import scalaz.{\/-, -\/}
-
-trait AcceptanceTestFixture extends FlatSpec with ShouldMatchers with CalculatorMatchers {
+trait AcceptanceTestFixture extends FlatSpec with Matchers with CalculatorMatchers {
 
   def acceptanceTests(suiteName: String, calculator: Calculator): Unit = {
 
