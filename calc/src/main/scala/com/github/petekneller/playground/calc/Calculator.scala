@@ -12,14 +12,14 @@ object Calculator {
 
   type EitherApplicative[x] = String \/ x
 
-  val defaultOperations = List[(String, List[Double] => CalcResult)](
+  val defaultOperations = List[(String, List[Double] => Result)](
     "+" -> foldingOperator(_ + _),
     "-" -> foldingOperator(_ - _),
     "*" -> foldingOperator(_ * _),
     "/" -> foldingOperator(_ / _)
   )
 
-  def run(input: String, operations: List[(String, List[Double] => CalcResult)] = defaultOperations): CalcResult = {
+  def run(input: String, operations: List[(String, List[Double] => Result)] = defaultOperations): Result = {
 
     sealed trait AST
     case class Lit(literal: String) extends AST
@@ -34,9 +34,9 @@ object Calculator {
       def validInput: Parser[AST] = literal | expression
     }
 
-    def parseLiteral(input: String): CalcResult = \/.fromTryCatchNonFatal(input.toDouble).leftMap(t => s"Invalid literal: '$input' is not a floating point number; full error follows: \n ${t.toString}")
+    def parseLiteral(input: String): Result = \/.fromTryCatchNonFatal(input.toDouble).leftMap(t => s"Invalid literal: '$input' is not a floating point number; full error follows: \n ${t.toString}")
 
-    def processExpression(expr: AST): CalcResult = {
+    def processExpression(expr: AST): Result = {
       expr match {
         case Lit(literal) =>
           parseLiteral(literal)
@@ -58,7 +58,7 @@ object Calculator {
     }
   }
 
-  private def foldingOperator(f: (Double, Double) => Double): List[Double] => CalcResult = { operands =>
+  private def foldingOperator(f: (Double, Double) => Double): List[Double] => Result = { operands =>
     \/-(operands.reduceLeft[Double]{ case (acc, m) => f(acc, m) })
   }
 }

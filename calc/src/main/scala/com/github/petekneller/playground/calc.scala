@@ -4,7 +4,7 @@ import scalaz.\/
 
 package object calc {
 
-  type CalcResult = String \/ Double
-  type Calculator = String => CalcResult
+  type Result = String \/ Double
+  type Calculator = String => Result
 
 }

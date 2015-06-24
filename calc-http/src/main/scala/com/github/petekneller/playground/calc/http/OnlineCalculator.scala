@@ -2,13 +2,13 @@ package com.github.petekneller.playground.calc.http
 
 import java.net.URLDecoder
 
-import com.github.petekneller.playground.calc.{CalcResult, Calculator}
+import com.github.petekneller.playground.calc.{Result, Calculator}
 import io.shaka.http.Request.GET
 import io.shaka.http.RequestMatching._
 import io.shaka.http.Response._
 import io.shaka.http.{HttpServer, Status}
 
-class OnlineCalculator(port: Int = 0, operators: List[(String, List[Double] => CalcResult)] = Calculator.defaultOperations) {
+class OnlineCalculator(port: Int = 0, operators: List[(String, List[Double] => Result)] = Calculator.defaultOperations) {
 
   val calculator: Calculator = Calculator.run(_, operators)
 

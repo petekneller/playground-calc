@@ -13,7 +13,7 @@ class ConfigurationTest extends FunSuite with ShouldMatchers with CalculatorMatc
 
   test("default operators can be overridden with adhoc operators") {
 
-    val negation: (String, List[Double] => CalcResult) = ("¬", {
+    val negation: (String, List[Double] => Result) = ("¬", {
       case arg :: Nil => \/-(-1 * arg)
       case _ => -\/("Invalid arguments: negation takes only one argument")
     })
