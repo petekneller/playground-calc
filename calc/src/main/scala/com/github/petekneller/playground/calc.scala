@@ -7,6 +7,6 @@ package object calc {
   type Result = String \/ Double
   type Calculator = String => Result
 
-  type OperatorBinding = (String, List[Double] => Result)
-
+  type Operator = List[Double] => Result
+  type OperatorBinding = (String, Operator)
 }
