@@ -53,6 +53,7 @@ object Calculator {
 
     import parsers._
     parse(validInput, input) match {
+      case Error(msg, _) => -\/(msg)
       case Failure(msg, _) => -\/(msg)
       case Success(expr, _) => processExpression(expr)
     }
