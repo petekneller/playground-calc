@@ -25,13 +25,22 @@ class StatisticsTest extends FlatSpec with Matchers {
   it should "report mean time of the iterations" in {
 
     val results = Statistics(n, runsABitSlow)
-    results.mean.toMillis should (be > 0L and be < 100L)
+    results.mean.toMillis should (be > 0L and be < 10L)
   }
 
   it should "report median time of the iterations" in {
 
     val results = Statistics(n, runsABitSlow)
-    results.median.toMillis should (be > 0L and be < 100L)
+    results.median.toMillis should (be > 0L and be < 10L)
+  }
+
+  it should "report minimum and maximum durations" in {
+
+    val results = Statistics(n, runsABitSlow)
+    // I figure the minimum _should_ fall in the lower half of the range
+    results.minimum.toMillis should (be >= 0L and be <= 5L)
+    // and the maximum _should_ fall in the upper half
+    results.maximum.toMillis should (be >= 5L and be <= 10L)
   }
 
   val n = 10
