@@ -43,6 +43,12 @@ class StatisticsTest extends FlatSpec with Matchers {
     results.maximum.toMillis should (be >= 5L and be <= 10L)
   }
 
+  it should "report standard deviation" in {
+
+    val results = Statistics(n, runsABitSlow)
+    results.stdDeviation.toMillis should (be > 0L and be < 5L)
+  }
+
   val n = 10
   val failsHalfTheTime: Calculator = (input: String) => { if (Random.nextBoolean()) -\/("argh!") else Calculator.run(input) }
   val runsABitSlow: Calculator = (input: String) => { sleep(Random.nextInt(10)); Calculator.run(input) }
