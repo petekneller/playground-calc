@@ -13,7 +13,7 @@ class StatisticsTest extends FlatSpec with Matchers {
   "a load tester for calculators" should "run a configurable number of passes and report some statistics" in {
 
     val results = Statistics(n, Calculator.run(_))
-    results.numberIterationsSuccessful should equal(1000)
+    results.numberIterationsSuccessful should equal(n)
   }
 
   it should "report number of successes" in {
@@ -24,11 +24,17 @@ class StatisticsTest extends FlatSpec with Matchers {
 
   it should "report mean time of the iterations" in {
 
-    val results = Statistics(n, Calculator.run(_))
+    val results = Statistics(n, runsABitSlow)
     results.mean.toMillis should (be > 0L and be < 100L)
   }
 
-  val n = 1000
+  it should "report median time of the iterations" in {
+
+    val results = Statistics(n, runsABitSlow)
+    results.median.toMillis should (be > 0L and be < 100L)
+  }
+
+  val n = 10
   val failsHalfTheTime: Calculator = (input: String) => { if (Random.nextBoolean()) -\/("argh!") else Calculator.run(input) }
-  val runsABitSlow: Calculator = (input: String) => { Calculator.run(input) }
+  val runsABitSlow: Calculator = (input: String) => { sleep(Random.nextInt(10)); Calculator.run(input) }
 }
