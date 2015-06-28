@@ -8,11 +8,13 @@ object CalcBuild extends Build {
     private val utterlyIdle = "com.googlecode.utterlyidle" % "utterlyidle" % "741"
     private val scalaZ = "org.scalaz" %% "scalaz-core" % "7.1.1"
     private val naiveHttp = "io.shaka" %% "naive-http-server" % "37"
+    private val spire = "org.spire-math" %% "spire" % "0.10.1"
 
     object Compile  {
       val utterlyIdle = Dependencies.utterlyIdle
       val scalaZ = Dependencies.scalaZ
       val naiveHttp = Dependencies.naiveHttp
+      val spire = Dependencies.spire
     }
 
     object Test {
@@ -49,6 +51,7 @@ object CalcBuild extends Build {
       Seq(
         libraryDependencies ++= Seq(
           Compile.scalaZ,
+          Compile.spire,
           Test.scalaTest
         )
       )
