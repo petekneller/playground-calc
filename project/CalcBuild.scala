@@ -22,6 +22,12 @@ object CalcBuild extends Build {
     }
   }
 
+  val consoleImports =
+    """
+      |import com.github.petekneller.playground.calc.analysis._
+      |import com.github.petekneller.playground.calc.utilities._
+    """.stripMargin
+
   // common across all modules
   val buildSettings = Seq(
     // version is specified in /build-number.sbt
@@ -53,7 +59,8 @@ object CalcBuild extends Build {
           Compile.scalaZ,
           Compile.spire,
           Test.scalaTest
-        )
+        ),
+        initialCommands := consoleImports
       )
   )
 
